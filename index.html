@@ -2,71 +2,246 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>我的个人主页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的ACGN次元主页 | 请问今天要来点兔子吗？</title>
+    <!-- 动态粒子背景 -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: "微软雅黑", "幼圆", sans-serif;
         }
-        body {
-            background: #121212;
-            color: white;
-            font-family: "Microsoft YaHei", sans-serif;
+        /* 粒子背景容器 */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            background: url(background.jpg) no-repeat center center;
+            background-size: cover;
+            filter: brightness(0.3);
+        }
+        /* 主容器 */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
             padding: 20px;
+            background: rgba(18, 22, 41, 0.85);
+            background-blend-mode: overlay;
         }
-        .avatar {
-            width: 120px;
-            height: 120px;
+        /* 点兔主题头像框 */
+        .avatar-box {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            background: #444;
+            border: 4px solid #f8c291;
+            overflow: hidden;
             margin-bottom: 20px;
-            background-image: url(https://picsum.photos/200);
-            background-size: cover;
+            box-shadow: 0 0 20px #f8c291, 0 0 40px rgba(248, 194, 145, 0.5);
+            transition: all 0.5s ease;
         }
+        .avatar-box:hover {
+            transform: scale(1.05) rotate(360deg);
+            box-shadow: 0 0 30px #f6e58d, 0 0 60px rgba(246, 229, 141, 0.6);
+        }
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* 标题与签名 */
         h1 {
-            font-size: 28px;
+            font-size: 36px;
+            color: #f8c291;
+            text-shadow: 0 0 10px #f8c291, 0 0 20px rgba(248, 194, 145, 0.8);
             margin-bottom: 10px;
         }
-        .bio {
-            color: #aaa;
-            margin-bottom: 30px;
-            max-width: 400px;
+        .signature {
+            color: #74b9ff;
+            font-size: 18px;
+            margin-bottom: 40px;
+            font-style: italic;
+            text-shadow: 0 0 8px #74b9ff;
         }
-        .links a {
-            display: inline-block;
-            color: white;
-            background: #222;
-            padding: 12px 24px;
-            margin: 8px;
-            border-radius: 8px;
+        /* 炫酷链接卡片容器 */
+        .link-card-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+        /* 链接卡片样式 */
+        .link-card {
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(44, 62, 80, 0.8);
+            border-radius: 12px;
+            border: 2px solid transparent;
+            background-image: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)), 
+                              linear-gradient(to right, #f8c291, #74b9ff, #a29bfe);
+            background-clip: padding-box, border-box;
+            background-origin: padding-box, border-box;
             text-decoration: none;
-            transition: 0.3s;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .links a:hover {
-            background: #007bff;
-            transform: translateY(-3px);
+        /* 卡片hover动态效果 */
+        .link-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        .link-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 15px var(--card-color);
+            background-color: rgba(52, 73, 94, 0.9);
+        }
+        .link-card:hover::before {
+            left: 100%;
+        }
+        /* 每个卡片专属配色（区分不同类型） */
+        .bilibili {--card-color: #fb7299;}
+        .zhenhong {--card-color: #e84393;}
+        .acgn {--card-color: #00cec9;}
+        .music {--card-color: #6c5ce7;}
+        .huimi {--card-color: #fd79a8;}
+        .conch {--card-color: #74b9ff;}
+        .jm {--card-color: #f39c12;}
+        /* 卡片图标 */
+        .link-card i {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        /* 底部版权 */
+        .footer {
+            margin-top: 60px;
+            color: #95a5a6;
+            font-size: 14px;
+            text-align: center;
+        }
+        /* 适配手机 */
+        @media (max-width: 768px) {
+            h1 {font-size: 28px;}
+            .signature {font-size: 16px;}
+            .link-card-group {grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));}
+            .link-card {height: 90px; font-size: 14px;}
         }
     </style>
+    <!-- 图标库 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- 动态粒子背景 -->
+    <div id="particles-js"></div>
+    <!-- 主内容 -->
+    <div class="container">
+        <!-- 头像（可替换成你自己的头像） -->
+        <div class="avatar-box">
+            <img src="tx.jpg" alt="个人头像">
+        </div>
+        <!-- 标题和签名（可修改） -->
+        <h1>憂藍一二乗的次元小站</h1>
+        <div class="signature">请问今天要来点兔子吗？｜ACGN资源合集</div>
+        <!-- 所有链接卡片（已整合你要的全部地址） -->
+        <div class="link-card-group">
+            <a href="https://space.bilibili.com/1582633652?spm_id_from=333.1007.0.0" class="link-card bilibili" target="_blank">
+                <i class="fab fa-bilibili"></i>
+                我的B站主页
+            </a>
+            <a href="https://dev.shinnku.us/" class="link-card zhenhong" target="_blank">
+                <i class="fas fa-gamepad"></i>
+                真红小站
+            </a>
+            <a href="https://www.allcc.cc/" class="link-card acgn" target="_blank">
+                <i class="fas fa-book"></i>
+                ACGN资源站
+            </a>
+            <a href="https://music.lzmhhh.com/" class="link-card music" target="_blank">
+                <i class="fas fa-music"></i>
+                次元音乐站
+            </a>
+            <a href="https://enazo.cn/" class="link-card huimi" target="_blank">
+                <i class="fas fa-paint-brush"></i>
+                绘谜画猜
+            </a>
+            <a href="https://lab.magiconch.com/" class="link-card conch" target="_blank">
+                <i class="fas fa-magic"></i>
+                神奇海螺试验场
+            </a>
+            <a href="https://jmcomicne.net/" class="link-card jm" target="_blank">
+                <i class="fas fa-comic"></i>
+                漫画发布页
+            </a>
+        </div>
+        <!-- 底部（可修改） -->
+        <div class="footer">
+            主题：请问今天要来点兔子吗？ | 次元永不打烊 ✨
+        </div>
+    </div>
 
-<div class="avatar"></div>
-<h1>你的名字</h1>
-<div class="bio">这是我的个人主页，一个普通又特别的少年。</div>
-
-<div class="links">
-    <a href="https://github.com">GitHub</a>
-    <a href="https://qq.com">QQ空间</a>
-    <a href="https://bilibili.com">B站</a>
-    <a href="https://music.163.com">网易云</a>
-</div>
-
+    <!-- 粒子背景配置（点兔浅粉+浅蓝粒子，贴合主题） -->
+    <script>
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {"value": 80, "density": {"enable": true, "value_area": 800}},
+                "color": {"value": ["#f8c291", "#74b9ff", "#f6e58d", "#a29bfe"]},
+                "shape": {"type": "circle"},
+                "opacity": {"value": 0.7, "random": true},
+                "size": {"value": 3, "random": true},
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#74b9ff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {"enable": true, "mode": "grab"},
+                    "onclick": {"enable": true, "mode": "push"},
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {"distance": 140, "line_linked": {"opacity": 1}},
+                    "push": {"particles_nb": 4}
+                }
+            },
+            "retina_detect": true
+        });
+    </script>
 </body>
 </html>
